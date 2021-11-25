@@ -2,55 +2,60 @@ import axios from "axios";
 import { Component } from "react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useParams } from "react-router";
 
-export default function EditEmployee() {
-    const { id } = useParams();
-
-    return (
-        <EditEmployeeWithProps id={id} />
-    );
+interface IProps {
 }
 
-class EditEmployeeWithProps extends Component {
+interface IState {
+  name?: string;
+  birthDate?: Date;
+  gender?: string;
+  salary?: number; 
+}
 
-    constructor(props) {
+export default class CreateEmployee extends Component<IProps, IState> {
+    constructor(props: IProps) {
         super(props);
 
+        this.onChangeName = this.onChangeName.bind(this);
+        this.onChangeBirthDate = this.onChangeBirthDate.bind(this);
+        this.onChangeGender = this.onChangeGender.bind(this);
         this.onChangeSalary = this.onChangeSalary.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
             name: '',
-            birthDate: '',
+            birthDate: new Date(),
             gender: '',
             salary: 0
         }
     }
 
-    componentDidMount() {
-        // console.log(this);
-        axios.get('http://localhost:9000/api/v1/employees/' + this.props.id)
-            .then(response => {
-                this.setState({
-                    name: response.data.name,
-                    birthDate: new Date(response.data.birthDate),
-                    gender: response.data.gender,
-                    salary: response.data.salary
-                })
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-    }
-
-    onChangeSalary(e) {
+    onChangeName(e: React.ChangeEvent<HTMLInputElement>) {
         this.setState({
-            salary: e.target.value
+            name: e.target.value
         });
     }
 
-    onSubmit(e) {
+    onChangeBirthDate(date: Date) {
+        this.setState({
+            birthDate: date
+        });
+    }
+
+    onChangeGender(e: React.ChangeEvent<HTMLSelectElement>) {
+        this.setState({
+            gender: e.target.value
+        });
+    }
+
+    onChangeSalary(e: React.ChangeEvent<HTMLInputElement>) {
+        this.setState({
+            salary: Number(e.target.value)
+        });
+    }
+
+    onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
         const employee = {
@@ -62,43 +67,42 @@ class EditEmployeeWithProps extends Component {
 
         console.log(employee);
 
-        axios.post('http://localhost:9000/api/v1/employees/' + this.props.id, employee)
+        axios.post('http://localhost:9000/api/v1/employees', employee)
             .then((res) => console.log(res.data));
-
-        window.location = '/';
+        // FIXME: if not working, window.location = '/'
+        window.location.href = '/';
     }
 
     render() {
         return (
             <div>
-                <h3>Edit Employee Info</h3>
+                <h3>Register New Employee</h3>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <label>Name: </label>
+                        <label>Full Name: </label>
                         <input type="text"
                             required
                             className="form-control"
                             value={this.state.name}
-                            disabled
+                            onChange={this.onChangeName}
                         />
                     </div>
                     <div className="form-group">
-                        <label>Date of Birth: </label>
+                        <label>Birth Date: </label>
                         <div>
                             <DatePicker
                                 selected={this.state.birthDate}
-                                disabled
+                                onChange={this.onChangeBirthDate}
                             />
                         </div>
                     </div>
                     <div className="form-group">
                         <label>Gender: </label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={this.state.gender === 'f'? "Female" : "Male"}
-                            disabled
-                        />
+                        <select required className="form-control" onChange={this.onChangeGender}>
+                            <option value='' disabled selected>Select</option>
+                            <option key='f' value='f'>Female</option>
+                            <option key='m' value='m'>Male</option>
+                        </select>
                     </div>
                     <div className="form-group">
                         <label>Salary: </label>
@@ -109,7 +113,7 @@ class EditEmployeeWithProps extends Component {
                             onChange={this.onChangeSalary}
                         />
                     </div>
-
+            
                     <div className="form-group">
                         <input type="submit" value="Submit" className="btn btn-primary" />
                     </div>

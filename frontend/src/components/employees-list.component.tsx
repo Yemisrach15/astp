@@ -3,10 +3,27 @@ import { Component } from "react";
 import { Link } from "react-router-dom";
 import '../App.css';
 
-const Employee = props => (
+interface IProps {
+}
+interface IEmployee{
+    _id?: string;
+    name?: string;
+    birthDate: Date;
+    gender?: string;
+    salary?: number;
+}
+interface IState {
+  employees: IEmployee[];
+}
+interface IPropEmployee {
+    employee: IEmployee;
+    deleteEmployee: Function;
+}
+
+const Employee = (props: IPropEmployee) => (
     <tr>
         <td>{props.employee.name}</td>
-        <td>{props.employee.birthDate.substring(0, 10)}</td>
+        <td>{props.employee.birthDate.toString().substring(0, 10)}</td>
         <td>{props.employee.gender === "f"? "Female": "Male"}</td>
         <td>{props.employee.salary}</td>
         <td>
@@ -16,8 +33,8 @@ const Employee = props => (
     </tr>
 )
 
-export default class EmployeesList extends Component {
-    constructor(props) {
+export default class EmployeesList extends Component<IProps, IState> {
+    constructor(props: IProps) {
         super(props);
 
         this.deleteEmployee = this.deleteEmployee.bind(this);
@@ -37,7 +54,7 @@ export default class EmployeesList extends Component {
             .catch(err => console.log(err));
     }
 
-    deleteEmployee(id) {
+    deleteEmployee(id: String) {
         axios.delete('http://localhost:9000/api/v1/employees/' + id)
             .then(res => {
                 console.log(res.data);
