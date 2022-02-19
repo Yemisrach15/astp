@@ -3,6 +3,7 @@ import { Component } from "react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useParams } from "react-router";
+import styled, { css } from 'styled-components';
 
 interface IProps {
     id: string;
@@ -23,6 +24,23 @@ export default function EditEmployee() {
     );
 }
 
+const FormGroup = styled.div`
+    margin-bottom: 1em;
+`
+const Button = styled.button`
+    background: #FFC600;
+    border: #FFC600 1px solid;
+    color: white;
+    transition: .5s cubic-bezier(0, 0, 0.2, 1);
+    ${css`
+        &:hover {
+            background: none;
+            border:  #FFC600 1px solid;
+            box-shadow: 0px 5px 0px 0px #ffc600;
+            color: #FFC600;
+        }
+    `}
+`
 class EditEmployeeWithProps extends Component<IProps, IState> {
 
     constructor(props: IProps) {
@@ -40,7 +58,6 @@ class EditEmployeeWithProps extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-        // console.log(this);
         axios.get('http://localhost:9000/api/v1/employees/' + this.props.id)
             .then(response => {
                 this.setState({
@@ -84,7 +101,7 @@ class EditEmployeeWithProps extends Component<IProps, IState> {
             <div>
                 <h3>Edit Employee Info</h3>
                 <form onSubmit={this.onSubmit}>
-                    <div className="form-group">
+                    <FormGroup className="form-group">
                         <label>Name: </label>
                         <input type="text"
                             required
@@ -92,8 +109,8 @@ class EditEmployeeWithProps extends Component<IProps, IState> {
                             value={this.state.name}
                             disabled
                         />
-                    </div>
-                    <div className="form-group">
+                    </FormGroup>
+                    <FormGroup className="form-group">
                         <label>Date of Birth: </label>
                         <div>
                             <DatePicker
@@ -102,8 +119,8 @@ class EditEmployeeWithProps extends Component<IProps, IState> {
                                 disabled
                             />
                         </div>
-                    </div>
-                    <div className="form-group">
+                    </FormGroup>
+                    <FormGroup className="form-group">
                         <label>Gender: </label>
                         <input
                             type="text"
@@ -111,8 +128,8 @@ class EditEmployeeWithProps extends Component<IProps, IState> {
                             value={this.state.gender === 'f'? "Female" : "Male"}
                             disabled
                         />
-                    </div>
-                    <div className="form-group">
+                    </FormGroup>
+                    <FormGroup className="form-group">
                         <label>Salary: </label>
                         <input
                             type="text"
@@ -120,11 +137,11 @@ class EditEmployeeWithProps extends Component<IProps, IState> {
                             value={this.state.salary}
                             onChange={this.onChangeSalary}
                         />
-                    </div>
+                    </FormGroup>
 
-                    <div className="form-group">
-                        <input type="submit" value="Submit" className="btn btn-primary" />
-                    </div>
+                    <FormGroup className="form-group">
+                        <Button className="btn btn-primary">Submit</Button>
+                    </FormGroup>
                 </form>
             </div>
         );
