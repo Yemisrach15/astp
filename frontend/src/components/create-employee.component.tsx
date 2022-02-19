@@ -2,6 +2,7 @@ import axios from "axios";
 import { Component } from "react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import styled, { css } from "styled-components";
 
 interface IProps {
 }
@@ -12,6 +13,24 @@ interface IState {
   gender?: string;
   salary?: number; 
 }
+
+const FormGroup = styled.div`
+    margin-bottom: 1em;
+`
+const Button = styled.button`
+    background: #FFC600;
+    border: #FFC600 1px solid;
+    color: white;
+    transition: .5s cubic-bezier(0, 0, 0.2, 1);
+    ${css`
+        &:hover {
+            background: none;
+            border:  #FFC600 1px solid;
+            box-shadow: 0px 5px 0px 0px #ffc600;
+            color: #FFC600;
+        }
+    `}
+`
 
 export default class CreateEmployee extends Component<IProps, IState> {
     constructor(props: IProps) {
@@ -78,7 +97,7 @@ export default class CreateEmployee extends Component<IProps, IState> {
             <div>
                 <h3>Register New Employee</h3>
                 <form onSubmit={this.onSubmit}>
-                    <div className="form-group">
+                    <FormGroup className="form-group">
                         <label>Full Name: </label>
                         <input type="text"
                             required
@@ -86,8 +105,8 @@ export default class CreateEmployee extends Component<IProps, IState> {
                             value={this.state.name}
                             onChange={this.onChangeName}
                         />
-                    </div>
-                    <div className="form-group">
+                    </FormGroup>
+                    <FormGroup className="form-group">
                         <label>Birth Date: </label>
                         <div>
                             <DatePicker
@@ -95,16 +114,16 @@ export default class CreateEmployee extends Component<IProps, IState> {
                                 onChange={this.onChangeBirthDate}
                             />
                         </div>
-                    </div>
-                    <div className="form-group">
+                    </FormGroup>
+                    <FormGroup className="form-group">
                         <label>Gender: </label>
                         <select required className="form-control" onChange={this.onChangeGender}>
                             <option value='' disabled selected>Select</option>
                             <option key='f' value='f'>Female</option>
                             <option key='m' value='m'>Male</option>
                         </select>
-                    </div>
-                    <div className="form-group">
+                    </FormGroup>
+                    <FormGroup className="form-group">
                         <label>Salary: </label>
                         <input
                             type="text"
@@ -112,11 +131,11 @@ export default class CreateEmployee extends Component<IProps, IState> {
                             value={this.state.salary}
                             onChange={this.onChangeSalary}
                         />
-                    </div>
+                    </FormGroup>
             
-                    <div className="form-group">
-                        <input type="submit" value="Submit" className="btn btn-primary" />
-                    </div>
+                    <FormGroup className="form-group">
+                        <Button className="btn btn-primary">Submit</Button>
+                    </FormGroup>
                 </form>
             </div>
         );
