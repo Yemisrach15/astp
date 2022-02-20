@@ -3,7 +3,10 @@ import { Component } from "react";
 import styled, { css } from "styled-components";
 import "../App.css";
 
-interface IProps {}
+interface IProps {
+  state: Array<Object>,
+  onInit: Function
+}
 interface IEmployee {
   _id?: string;
   name?: string;
@@ -80,14 +83,19 @@ export default class EmployeesList extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-    axios
-      .get("http://localhost:9000/api/v1/employees")
-      .then((res) => {
-        this.setState({
-          employees: res.data,
-        });
-      })
-      .catch((err) => console.log(err));
+    // axios
+    //   .get("http://localhost:9000/api/v1/employees")
+    //   .then((res) => {
+    //     this.setState({
+    //       employees: res.data,
+    //     });
+    //   })
+    //   .catch((err) => console.log(err));
+    console.log(this.props);
+    this.props.onInit();
+    console.log(this.props.state);
+    
+    
   }
 
   deleteEmployee(id: String) {
