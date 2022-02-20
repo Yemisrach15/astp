@@ -18,7 +18,7 @@ router.route('/').post((req, res) => {
     });
 
     newEmployee.save()
-        .then(() => res.json('Employee added'))
+        .then((e) => res.json(e))
         .catch(err => res.status(400).json('Error: ' + err));
 })
 
@@ -28,7 +28,7 @@ router.route('/:id').get((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 })
 
-router.route('/:id').post((req, res) => {
+router.route('/:id').put((req, res) => {
     Employee.findById(req.params.id)
         .then(employee => {
             employee.name = req.body.name;
@@ -37,7 +37,7 @@ router.route('/:id').post((req, res) => {
             employee.salary = Number(req.body.salary);
 
             employee.save()
-                .then(() => res.json('Employee updated'))
+                .then((e) => res.json(e))
                 .catch(err => res.status(400).json('Error: ' + err));
         })
         .catch(err => res.status(400).json('Error: ' + err));   
