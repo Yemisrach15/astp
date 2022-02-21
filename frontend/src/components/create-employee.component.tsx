@@ -5,6 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import styled, { css } from "styled-components";
 
 interface IProps {
+    onCreate: Function
 }
 
 interface IState {
@@ -76,20 +77,8 @@ export default class CreateEmployee extends Component<IProps, IState> {
 
     onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-
-        const employee = {
-            name: this.state.name,
-            birthDate: this.state.birthDate,
-            gender: this.state.gender,
-            salary: this.state.salary,
-        }
-
-        console.log(employee);
-
-        axios.post('http://localhost:9000/api/v1/employees', employee)
-            .then((res) => console.log(res.data));
-        // FIXME: if not working, window.location = '/'
-        window.location.href = '/';
+        this.props.onCreate(this.state);
+        window.location.href = '/'; // FIXME: if not working, window.location = '/'
     }
 
     render() {

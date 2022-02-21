@@ -1,26 +1,37 @@
-import axios from "axios";
 import { Component } from "react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useParams } from "react-router";
 import styled, { css } from 'styled-components';
 
-interface IProps {
+interface EditEmployeeProps {
+    onEdit: Function;
+    currentEmployee: IEmployee;
+}
+
+interface IProps extends EditEmployeeProps {
     id: string;
 }
 
 interface IState {
+	_id?: string;
   name?: string;
-  birthDate?: Date;
+  birthDate: Date;
   gender?: string;
   salary?: number; 
 }
 
-export default function EditEmployee() {
+interface IEmployee extends IState {
+    createdAt?: Date;
+    updatedAt?: Date;
+    __v?: number
+}
+
+export default function EditEmployee({onEdit, currentEmployee}: EditEmployeeProps) {
     const { id } = useParams();
 
     return (
-        <EditEmployeeWithProps id={id!} />
+        <EditEmployeeWithProps id={id!} onEdit={onEdit} currentEmployee={currentEmployee} />
     );
 }
 
@@ -58,18 +69,14 @@ class EditEmployeeWithProps extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-        axios.get('http://localhost:9000/api/v1/employees/' + this.props.id)
-            .then(response => {
-                this.setState({
-                    name: response.data.name,
-                    birthDate: new Date(response.data.birthDate),
-                    gender: response.data.gender,
-                    salary: response.data.salary
-                })
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
+        let e = this.props.currentEmployee;
+        this.setState({
+			_id: e._id,
+            name: e.name,
+            birthDate: e.birthDate,
+            gender: e.gender,
+            salary: e.salary
+        });
     }
 
     onChangeSalary(e: React.ChangeEvent<HTMLInputElement>) {
@@ -80,23 +87,11 @@ class EditEmployeeWithProps extends Component<IProps, IState> {
 
     onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-
-        const employee = {
-            name: this.state.name,
-            birthDate: this.state.birthDate,
-            gender: this.state.gender,
-            salary: this.state.salary,
-        }
-
-        console.log(employee);
-
-        axios.post('http://localhost:9000/api/v1/employees/' + this.props.id, employee)
-            .then((res) => console.log(res.data));
-        // FIXME: if not working, window.location = '/'
-        window.location.href = '/';
+        this.props.onEdit(this.state);
+        window.location.href = '/'; // FIXME: if not working, window.location = '/'
     }
-
-    render() {
+        
+    render() {        
         return (
             <div>
                 <h3>Edit Employee Info</h3>
@@ -113,8 +108,9 @@ class EditEmployeeWithProps extends Component<IProps, IState> {
                     <FormGroup className="form-group">
                         <label>Date of Birth: </label>
                         <div>
-                            <DatePicker
-                                selected={this.state.birthDate}
+                            <input type="text"
+                                className="form-control"
+                                value={this.state.birthDate.toString().substring(0, 10)}
                                 onChange={()=>null}
                                 disabled
                             />

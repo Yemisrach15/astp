@@ -10,7 +10,7 @@ const Div = styled.div`
   padding: 0 1em;
 `
 
-function App() {
+function App({state, onInit, onGetOne, onCreate, onEdit, onDelete}) {
   return (
     <BrowserRouter>
       <div>
@@ -18,9 +18,9 @@ function App() {
         <br />
         <Div>
           <Routes>
-            <Route path='/' exact element={<EmployeesList />} />
-            <Route path='/register' element={<CreateEmployee />} />
-            <Route path='/edit/:id' element={<EditEmployee />} />
+            <Route path='/' exact element={<EmployeesList employees={state.employees} onInit={onInit} onGetOne={onGetOne} onDelete={onDelete} />} />
+            <Route path='/register' element={<CreateEmployee onCreate={onCreate} />} />
+            <Route path='/edit/:id' element={<EditEmployee onEdit={onEdit} currentEmployee={state.currentEmployee} />} />
           </Routes>
         </Div>
       </div>
