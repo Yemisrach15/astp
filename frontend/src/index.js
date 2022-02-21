@@ -4,39 +4,29 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createStore, applyMiddleware, compose } from 'redux';
-import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
+import { devToolsEnhancer } from 'redux-devtools-extension';
 import reducer from './redux/reducer';
 import ActionTypes from './redux/ActionTypes';
 import rootSaga from './redux/sagas';
 
 const sagaMiddleware = createSagaMiddleware();
-const reduxDevTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
-const store = createStore(reducer, compose(applyMiddleware(sagaMiddleware), reduxDevTools));
+const store = createStore(reducer, compose(applyMiddleware(sagaMiddleware), devToolsEnhancer({ trace: true })));
 sagaMiddleware.run(rootSaga);
 
-// trial
-// store.dispatch({ type: ActionTypes.GET_EMPLOYEES });
-// store.dispatch({ type: ActionTypes.GET_EMPLOYEE, payload: { _id: "619fa16a5b324120ef3ec886" } });
-
-const action = type => store.dispatch({ type });
-store.dispatch({ type: ActionTypes.ADD_NEW_EMPLOYEE, payload: {
-  name: "Yemsirach",
-  birthDate: "2000-05-23",
-  gender: "f",
-  salary: 2000
-}});
+const action = (type, payload) => store.dispatch({ type, payload });
+action(ActionTypes.GET_EMPLOYEES);
 
 function render() {
   ReactDOM.render(
     <React.StrictMode>
-      <Provider store={store}>
-        <App state={store.getState()}
-          onInit={() => action(ActionTypes.GET_EMPLOYEES)}
-          onCreate={() => action(ActionTypes.ADD_NEW_EMPLOYEE)}
-          onEdit={() => action(ActionTypes.UPDATE_SALARY)}
-          onDelete={() => action(ActionTypes.DELETE_EMPLOYEE)} />
-      </Provider>
+        <App 
+          state={store.getState()}
+          onInit={(payload) => action(ActionTypes.GET_EMPLOYEES, payload)}
+          onGetOne={(payload) => action(ActionTypes.GET_EMPLOYEE, payload)}
+          onCreate={(payload) => action(ActionTypes.ADD_NEW_EMPLOYEE, payload)}
+          onEdit={(payload) => action(ActionTypes.UPDATE_SALARY, payload)}
+          onDelete={(payload) => action(ActionTypes.DELETE_EMPLOYEE, payload)} />
     </React.StrictMode>,
     document.getElementById('root')
   )

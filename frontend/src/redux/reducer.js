@@ -1,30 +1,40 @@
 import ActionTypes from "./ActionTypes";
 
-const initialState = [];
+const initialState = {
+    employees: [],
+    currentEmployee: {}
+};
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
         case ActionTypes.GET_EMPLOYEE_SUCCESS:
-            return state.filter(e => e._id === action.payload._id);
+            return {
+                ...state,
+                currentEmployee: action.payload
+            }
         case ActionTypes.GET_EMPLOYEES_SUCCESS:
             return {
                 ...state,
-                ...action.payload
+                employees: action.payload
             }
         case ActionTypes.ADD_NEW_EMPLOYEE_SUCCESS:
-            return [
+            return {
                 ...state,
-                {
-                    _id: 2,
-                    name: action.payload.name,
-                    birthDate: action.payload.birthDate,
-                    gender: action.payload.gender,
-                    salary: action.payload.salary
-                }];
+                employees: [
+                    ...state.employees,
+                    action.payload
+                ]
+            };
         case ActionTypes.UPDATE_SALARY_SUCCESS:
-            return state.map(e => e._id === action.payload._id ? { ...e, salary: action.payload.salary } : e)
+            return {
+                ...state,
+                employees: state.employees.map(e => e._id === action.payload._id ? { ...e, salary: action.payload.salary } : e)
+            }
         case ActionTypes.DELETE_EMPLOYEE_SUCCESS:
-            return 
+            return {
+                ...state,
+                employees: state.employees.filter(e => e._id !== action.payload._id)
+            }
         default:
             return state;
     }

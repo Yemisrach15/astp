@@ -1,11 +1,13 @@
-import axios from "axios";
 import { Component } from "react";
 import styled, { css } from "styled-components";
 import "../App.css";
 
 interface IProps {
-  state: Array<Object>,
-  onInit: Function
+  employees: Array<IEmployee>;
+  onInit: Function;
+  onGetOne: Function;
+  onEdit: Function;
+  onDelete: Function;
 }
 interface IEmployee {
   _id?: string;
@@ -19,7 +21,9 @@ interface IState {
 }
 interface IPropEmployee {
   employee: IEmployee;
-  deleteEmployee: Function;
+  onGetOne: Function;
+  onEdit: Function;
+  onDelete: Function;
 }
 
 const Link = styled.a`
@@ -52,68 +56,29 @@ const Tr = styled.tr`
   `}
 `;
 
-const Employee = (props: IPropEmployee) => (
+const Employee = ({employee, onGetOne, onEdit, onDelete}: IPropEmployee) => (
   <Tr>
-    <td>{props.employee.name}</td>
-    <td>{props.employee.birthDate.toString().substring(0, 10)}</td>
-    <td>{props.employee.gender === "f" ? "Female" : "Male"}</td>
-    <td>{props.employee.salary}</td>
+    <td>{employee.name}</td>
+    <td>{employee.birthDate.toString().substring(0, 10)}</td>
+    <td>{employee.gender === "f" ? "Female" : "Male"}</td>
+    <td>{employee.salary}</td>
     <td>
-      <Link href={"/edit/" + props.employee._id}>edit</Link> |
-      <Button
-        onClick={() => {
-          props.deleteEmployee(props.employee._id);
-        }}
-      >
-        delete
-      </Button>
+      <Link href={"/edit/" + employee._id}>edit</Link> |
+      <Button onClick={() => onDelete({_id: employee._id})}>delete</Button>
     </td>
   </Tr>
 );
 
 export default class EmployeesList extends Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-
-    this.deleteEmployee = this.deleteEmployee.bind(this);
-
-    this.state = {
-      employees: [],
-    };
-  }
-
-  componentDidMount() {
-    // axios
-    //   .get("http://localhost:9000/api/v1/employees")
-    //   .then((res) => {
-    //     this.setState({
-    //       employees: res.data,
-    //     });
-    //   })
-    //   .catch((err) => console.log(err));
-    console.log(this.props);
-    this.props.onInit();
-    console.log(this.props.state);
-    
-    
-  }
-
-  deleteEmployee(id: String) {
-    axios.delete("http://localhost:9000/api/v1/employees/" + id).then((res) => {
-      console.log(res.data);
-    });
-
-    this.setState({
-      employees: this.state.employees.filter((e) => e._id !== id),
-    });
-  }
 
   employeeList() {
-    return this.state.employees.map((currentEmployee) => {
+    return this.props.employees.map((currentEmployee) => {
       return (
         <Employee
           employee={currentEmployee}
-          deleteEmployee={this.deleteEmployee}
+          onGetOne={this.props.onGetOne}
+          onEdit={this.props.onEdit}
+          onDelete={this.props.onDelete}
           key={currentEmployee._id}
         />
       );
