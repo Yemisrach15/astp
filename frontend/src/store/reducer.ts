@@ -1,11 +1,16 @@
 import ActionTypes from "./ActionTypes";
+import { IEmployee, IState, ActionProp } from "../types/types";
 
-const initialState = {
+interface IEmployeeOpt extends Omit<IEmployee, 'birthDate'> {
+    birthDate?: Date;
+}
+
+const initialState: IState<IEmployeeOpt> = {
     employees: [],
     currentEmployee: {}
 };
 
-export default function reducer(state = initialState, action) {
+export default function reducer(state: IState<IEmployeeOpt> = initialState, action: ActionProp) {
     switch (action.type) {
         case ActionTypes.GET_EMPLOYEE:
             return {

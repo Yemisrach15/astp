@@ -1,6 +1,7 @@
 import { Component } from "react";
 import styled, { css } from "styled-components";
-import "../App.css";
+import "../stylesheets/App.css";
+import { IEmployee } from '../types/types';
 
 interface IProps {
   employees: Array<IEmployee>;
@@ -8,13 +9,7 @@ interface IProps {
   onGetOne: Function;
   onDelete: Function;
 }
-interface IEmployee {
-  _id?: string;
-  name?: string;
-  birthDate: Date;
-  gender?: string;
-  salary?: number;
-}
+
 interface IState {
   employees: IEmployee[];
 }

@@ -1,10 +1,12 @@
+import { AxiosResponse } from 'axios';
 import { takeEvery, call, put, all } from 'redux-saga/effects';
 import { getAllEmployees, postEmployee, putEmployee, deleteEmployee } from '../server/api';
 import ActionTypes from './ActionTypes';
+import { IEmployee, IAction } from '../types/types';
 
 function* getEmployees() {
     try {
-        const res = yield call(getAllEmployees);
+        const res: AxiosResponse<Array<IEmployee>> = yield call(getAllEmployees);
         yield put({ type: ActionTypes.GET_EMPLOYEES_SUCCESS, payload: res.data });
     }
     catch {
@@ -12,9 +14,9 @@ function* getEmployees() {
     }
 }
 
-function* newEmployee(action) {
+function* newEmployee(action: IAction) {
     try {
-        const res = yield call(postEmployee, action.payload);
+        const res: AxiosResponse<IEmployee> = yield call(postEmployee, action.payload);
         yield put({ type: ActionTypes.ADD_NEW_EMPLOYEE_SUCCESS, payload: res.data });
     }
     catch {
@@ -22,9 +24,9 @@ function* newEmployee(action) {
     }
 }
 
-function* updateEmployee(action) {
+function* updateEmployee(action: IAction) {
     try {
-        const res = yield call(putEmployee, action.payload._id, action.payload);
+        const res: AxiosResponse<IEmployee> = yield call(putEmployee, action.payload._id!, action.payload);
         yield put({ type: ActionTypes.UPDATE_SALARY_SUCCESS, payload: res.data });
     }
     catch {
@@ -32,9 +34,9 @@ function* updateEmployee(action) {
     }
 }
 
-function* removeEmployee(action) {
+function* removeEmployee(action: IAction) {
     try {
-        yield call(deleteEmployee, action.payload._id);
+        yield call(deleteEmployee, action.payload._id!);
         yield put({ type: ActionTypes.DELETE_EMPLOYEE_SUCCESS, payload: { _id: action.payload._id } });
     }
     catch {
