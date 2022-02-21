@@ -1,7 +1,7 @@
 import axios from "axios";
 import { IEmployee } from '../types/types';
 
-axios.defaults.baseURL = "http://localhost:9000/api/v1";
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
 export const getAllEmployees = async () => axios.get("/employees");
 export const getEmployee = async (id: string) => axios.get(`/employees/${id}`);
