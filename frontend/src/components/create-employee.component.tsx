@@ -1,18 +1,15 @@
-import axios from "axios";
 import { Component } from "react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled, { css } from "styled-components";
+import { IEmployee } from "../types/types";
 
 interface IProps {
     onCreate: Function
 }
 
-interface IState {
-  name?: string;
-  birthDate?: Date;
-  gender?: string;
-  salary?: number; 
+interface IState extends Omit<IEmployee, 'birthDate'> {
+    birthDate?: Date;
 }
 
 const FormGroup = styled.div`
@@ -99,6 +96,7 @@ export default class CreateEmployee extends Component<IProps, IState> {
                         <label>Birth Date: </label>
                         <div>
                             <DatePicker
+                                dateFormat='yyyy-MM-dd'
                                 selected={this.state.birthDate}
                                 onChange={this.onChangeBirthDate}
                             />
@@ -106,8 +104,8 @@ export default class CreateEmployee extends Component<IProps, IState> {
                     </FormGroup>
                     <FormGroup className="form-group">
                         <label>Gender: </label>
-                        <select required className="form-control" onChange={this.onChangeGender}>
-                            <option value='' disabled selected>Select</option>
+                        <select required className="form-control" onChange={this.onChangeGender} defaultValue='n'>
+                            <option value='n' disabled>Select</option>
                             <option key='f' value='f'>Female</option>
                             <option key='m' value='m'>Male</option>
                         </select>
