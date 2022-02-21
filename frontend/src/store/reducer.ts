@@ -33,6 +33,7 @@ export default function reducer(state: IState<IEmployeeOpt> = initialState, acti
         case ActionTypes.UPDATE_SALARY_SUCCESS:
             return {
                 ...state,
+                currentEmployee: {...state.currentEmployee, salary: action.payload.salary},
                 employees: state.employees.map(e => e._id === action.payload._id ? { ...e, salary: action.payload.salary } : e)
             }
         case ActionTypes.DELETE_EMPLOYEE_SUCCESS:
