@@ -18,9 +18,9 @@ function App({state, onInit, onGetOne, onCreate, onEdit, onDelete}) {
         <br />
         <Div>
           <Routes>
-            <Route path='/' exact element={<EmployeesList employees={state.employees} onInit={onInit} onGetOne={onGetOne} onEdit={onEdit} onDelete={onDelete} />} />
+            <Route path='/' exact element={<EmployeesList employees={state.employees} onInit={onInit} onGetOne={onGetOne} onDelete={onDelete} />} />
             <Route path='/register' element={<CreateEmployee onCreate={onCreate} />} />
-            <Route path='/edit/:id' element={<EditEmployee employees={state.employees} onEdit={onEdit} onGetOne={onGetOne} currentEmployee={state.currentEmployee} />} />
+            <Route path='/edit/:id' element={<EditEmployee onEdit={onEdit} currentEmployee={state.currentEmployee} />} />
           </Routes>
         </Div>
       </div>

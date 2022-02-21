@@ -1,4 +1,3 @@
-import axios from "axios";
 import { Component } from "react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -6,9 +5,7 @@ import { useParams } from "react-router";
 import styled, { css } from 'styled-components';
 
 interface EditEmployeeProps {
-    onEdit: Function
-    onGetOne: Function;
-    employees: Array<IEmployee>;
+    onEdit: Function;
     currentEmployee: IEmployee;
 }
 
@@ -17,6 +14,7 @@ interface IProps extends EditEmployeeProps {
 }
 
 interface IState {
+	_id?: string;
   name?: string;
   birthDate: Date;
   gender?: string;
@@ -24,17 +22,16 @@ interface IState {
 }
 
 interface IEmployee extends IState {
-    _id?: string;
     createdAt?: Date;
     updatedAt?: Date;
     __v?: number
 }
 
-export default function EditEmployee({onEdit, onGetOne, employees, currentEmployee}: EditEmployeeProps) {
+export default function EditEmployee({onEdit, currentEmployee}: EditEmployeeProps) {
     const { id } = useParams();
 
     return (
-        <EditEmployeeWithProps id={id!} onEdit={onEdit} onGetOne={onGetOne} employees={employees} currentEmployee={currentEmployee} />
+        <EditEmployeeWithProps id={id!} onEdit={onEdit} currentEmployee={currentEmployee} />
     );
 }
 
@@ -72,28 +69,14 @@ class EditEmployeeWithProps extends Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.props.onGetOne({_id: this.props.id});
-        // let e = this.props.currentEmployee;
-        let e = this.props.employees.find((e) => e._id === this.props.id);
+        let e = this.props.currentEmployee;
         this.setState({
-            name: e?.name,
-            birthDate: e? e.birthDate: new Date(),
-            gender: e?.gender,
-            salary: e?.salary
+			_id: e._id,
+            name: e.name,
+            birthDate: e.birthDate,
+            gender: e.gender,
+            salary: e.salary
         });
-
-        // axios.get('http://localhost:9000/api/v1/employees/' + this.props.id)
-        //     .then(response => {
-        //         this.setState({
-        //             name: response.data.name,
-        //             birthDate: new Date(response.data.birthDate),
-        //             gender: response.data.gender,
-        //             salary: response.data.salary
-        //         })
-        //     })
-        //     .catch(function (error) {
-        //         console.log(error);
-        //     })
     }
 
     onChangeSalary(e: React.ChangeEvent<HTMLInputElement>) {
@@ -127,7 +110,7 @@ class EditEmployeeWithProps extends Component<IProps, IState> {
                         <div>
                             <input type="text"
                                 className="form-control"
-                                value={''}
+                                value={this.state.birthDate.toString().substring(0, 10)}
                                 onChange={()=>null}
                                 disabled
                             />
