@@ -1,5 +1,5 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects';
-import { getAllEmployees, getEmployee, postEmployee, putEmployee, deleteEmployee } from '../server/api';
+import { getAllEmployees, postEmployee, putEmployee, deleteEmployee } from '../server/api';
 import ActionTypes from './ActionTypes';
 
 function* getEmployees() {
@@ -9,16 +9,6 @@ function* getEmployees() {
     }
     catch {
         yield put({ type: ActionTypes.GET_EMPLOYEES_FAIL });
-    }
-}
-
-function* getOneEmployee(action) {
-    try {
-        const res = yield call(getEmployee, action.payload._id);
-        yield put({ type: ActionTypes.GET_EMPLOYEE_SUCCESS, payload: res.data });
-    }
-    catch {
-        yield put({ type: ActionTypes.GET_EMPLOYEE_FAIL });
     }
 }
 
@@ -44,7 +34,7 @@ function* updateEmployee(action) {
 
 function* removeEmployee(action) {
     try {
-        const res = yield call(deleteEmployee, action.payload._id);
+        yield call(deleteEmployee, action.payload._id);
         yield put({ type: ActionTypes.DELETE_EMPLOYEE_SUCCESS, payload: { _id: action.payload._id } });
     }
     catch {
@@ -54,10 +44,6 @@ function* removeEmployee(action) {
 
 function* watchGetEmployees() {
     yield takeEvery(ActionTypes.GET_EMPLOYEES, getEmployees);
-}
-
-function* watchGetOneEmployee() {
-    yield takeEvery(ActionTypes.GET_EMPLOYEE, getOneEmployee);
 }
 
 function* watchCreateEmployee() {
@@ -75,7 +61,6 @@ function* watchRemoveEmployee() {
 export default function* rootSaga() {
     yield all([
         watchGetEmployees(),
-        watchGetOneEmployee(),
         watchCreateEmployee(),
         watchUpdateEmployee(),
         watchRemoveEmployee()

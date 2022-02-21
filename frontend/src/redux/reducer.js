@@ -7,10 +7,10 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
-        case ActionTypes.GET_EMPLOYEE_SUCCESS:
+        case ActionTypes.GET_EMPLOYEE:
             return {
                 ...state,
-                currentEmployee: action.payload
+                currentEmployee: state.employees.find((e) => e._id === action.payload._id)
             }
         case ActionTypes.GET_EMPLOYEES_SUCCESS:
             return {
