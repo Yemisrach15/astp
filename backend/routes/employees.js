@@ -42,13 +42,30 @@ router.route('/:id').get((req, res) => {
 })
 
 router.route('/:id').put((req, res) => {
+	if (!validator.isMongoId(req.params.id))
+		return res.status(422).json({code: 422, error: "Invalid id"});
+
     Employee.findById(req.params.id)
         .then(employee => {
-            employee.name = req.body.name;
-            employee.birthDate = Date.parse(req.body.birthDate);
-            employee.gender = req.body.gender;
-            employee.salary = Number(req.body.salary);
+            let name = req.body.name;
+			let birthDate = req.body.birthDate;
+			let gender = req.body.gender;
+			let salary = req.body.salary;
+			const today = (new Date()).toISOString().substring(0, 10);
 
+			if (!validator.isAlpha(name, 'en-US', {ignore: ' '}) || !validator.isLength(name, {min: 1, max: 50}))
+				return res.status(422).json({code: 422, error: 'Invalid name'});
+			if (!validator.isDate(birthDate, {format: 'YYYY-MM-DD'}) || !validator.isAfter(birthDate, '1951-01-01') || !validator.isBefore(birthDate, today))
+				return res.status(422).json({code: 422, error: 'Invalid date'});
+			if (!validator.isIn(gender, ['m', 'f']))
+				return res.status(422).json({code: 422, error: 'Invalid gender'});
+			if (!validator.isNumeric(salary.toString(), {min: 0}))
+				return res.status(422).json({code: 422, error: 'Invalid salary'});
+	
+			employee.name = name;
+			employee.birthDate = Date.parse(birthDate);
+			employee.gender = gender;
+			employee.salary = Number(salary);
             employee.save()
                 .then((e) => res.json(e))
                 .catch(err => res.status(400).json('Error: ' + err));
@@ -57,6 +74,9 @@ router.route('/:id').put((req, res) => {
 });
 
 router.route('/:id').delete((req, res) => {
+	if (!validator.isMongoId(req.params.id))
+		return res.status(422).json({code: 422, error: 'Invalid id'});
+
     Employee.findByIdAndDelete(req.params.id)
         .then(() => res.json('Employee deleted'))
         .catch(err => res.status(400).json('Error: ' + err));
