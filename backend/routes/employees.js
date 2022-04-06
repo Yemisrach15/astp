@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const validator = require('validator');
+const checkError = require('../utils/validator');
 let Employee = require('../models/employee.model');
 
 router.route('/').get((req, res) => {
@@ -14,15 +15,20 @@ router.route('/').post((req, res) => {
     let gender = req.body.gender;
     let salary = req.body.salary;
 	const today = (new Date()).toISOString().substring(0, 10);
+	let errors = [];
 
-	if (!validator.isAlpha(name, 'en-US', {ignore: ' '}) || !validator.isLength(name, {min: 1, max: 50}))
-		return res.status(422).json({code: 422, error: 'Invalid name'});
-	if (!validator.isDate(birthDate, {format: 'YYYY-MM-DD'}) || !validator.isAfter(birthDate, '1951-01-01') || !validator.isBefore(birthDate, today))
-		return res.status(422).json({code: 422, error: 'Invalid date'});
-	if (!validator.isIn(gender, ['m', 'f']))
-		return res.status(422).json({code: 422, error: 'Invalid gender'});
-	if (!validator.isNumeric(salary.toString(), {min: 0}))
-		return res.status(422).json({code: 422, error: 'Invalid salary'});
+	if (checkError(name, 'string', 'name', 1, 50, / /))
+		errors.push(...checkError(name, 'string', 'name', 1, 50, / /));
+	if (checkError(birthDate, 'date', 'birthDate', '1951-01-01', today))
+		errors.push(...checkError(birthDate, 'date', 'birthDate', '1951-01-01', today));
+	if (checkError(gender, 'string', 'gender', null, null, null, ['m', 'f']))
+		errors.push(...checkError(gender, 'string', 'gender', null, null, null, ['m', 'f']));
+	if (checkError(salary, 'number', 'salary', 0))
+		errors.push(...checkError(salary, 'number', 'salary', 0));
+
+	if (Object.keys(errors).length)
+		return res.status(422).json({ code: 422, errors});
+
 	
 	birthDate = Date.parse(birthDate);
 	salary = Number(salary);
@@ -52,16 +58,20 @@ router.route('/:id').put((req, res) => {
 			let gender = req.body.gender;
 			let salary = req.body.salary;
 			const today = (new Date()).toISOString().substring(0, 10);
+			let errors = [];
 
-			if (!validator.isAlpha(name, 'en-US', {ignore: ' '}) || !validator.isLength(name, {min: 1, max: 50}))
-				return res.status(422).json({code: 422, error: 'Invalid name'});
-			if (!validator.isDate(birthDate, {format: 'YYYY-MM-DD'}) || !validator.isAfter(birthDate, '1951-01-01') || !validator.isBefore(birthDate, today))
-				return res.status(422).json({code: 422, error: 'Invalid date'});
-			if (!validator.isIn(gender, ['m', 'f']))
-				return res.status(422).json({code: 422, error: 'Invalid gender'});
-			if (!validator.isNumeric(salary.toString(), {min: 0}))
-				return res.status(422).json({code: 422, error: 'Invalid salary'});
-	
+			if (checkError(name, 'string', 'name', 1, 50, / /))
+				errors.push(...checkError(name, 'string', 'name', 1, 50, / /));
+			if (checkError(birthDate, 'date', 'birthDate', '1951-01-01', today))
+				errors.push(...checkError(birthDate, 'date', 'birthDate', '1951-01-01', today));
+			if (checkError(gender, 'string', 'gender', null, null, null, ['m', 'f']))
+				errors.push(...checkError(gender, 'string', 'gender', null, null, null, ['m', 'f']));
+			if (checkError(salary, 'number', 'salary', 0))
+				errors.push(...checkError(salary, 'number', 'salary', 0));
+
+			if (Object.keys(errors).length)
+				return res.status(422).json({ code: 422, errors});
+
 			employee.name = name;
 			employee.birthDate = Date.parse(birthDate);
 			employee.gender = gender;
