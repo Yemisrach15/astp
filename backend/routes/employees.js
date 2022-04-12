@@ -41,6 +41,14 @@ router.route('/').post((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 })
 
+router.route('/analytics').get((req, res) => {
+	Employee.aggregate([
+		{ $group: { _id: '$gender', averageSalary: {$avg: '$salary', } } }
+	])
+		.then(data => res.json(data))
+		.catch(err => res.status(400).json('Error: ' + err));
+});
+
 router.route('/:id').get((req, res) => {
     Employee.findById(req.params.id)
         .then(employee => res.json(employee))
@@ -90,6 +98,6 @@ router.route('/:id').delete((req, res) => {
     Employee.findByIdAndDelete(req.params.id)
         .then(() => res.json('Employee deleted'))
         .catch(err => res.status(400).json('Error: ' + err));
-})
+});
 
 module.exports = router;
