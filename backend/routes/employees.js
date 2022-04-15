@@ -11,7 +11,7 @@ router.route('/').get((req, res) => {
 
 router.route('/').post((req, res) => {
     let name = req.body.name;
-    let birthDate = req.body.birthDate;
+    let birthDate = (new Date(req.body.birthDate)).toISOString().substring(0, 10);
     let gender = req.body.gender;
     let salary = req.body.salary;
 	const today = (new Date()).toISOString().substring(0, 10);
@@ -62,7 +62,7 @@ router.route('/:id').put((req, res) => {
     Employee.findById(req.params.id)
         .then(employee => {
             let name = req.body.name;
-			let birthDate = req.body.birthDate;
+			let birthDate = (new Date(req.body.birthDate)).toISOString().substring(0, 10);
 			let gender = req.body.gender;
 			let salary = req.body.salary;
 			const today = (new Date()).toISOString().substring(0, 10);
