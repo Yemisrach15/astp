@@ -14,9 +14,9 @@ export interface IAction {
     payload: IEmployee
 }
 
-export interface IState<T> {
+export interface IState {
     employees: Array<IEmployee>;
-    currentEmployee: T;
+    currentEmployee: ICurrentEmployeeState;
 }
 
 export interface IPayload {
@@ -30,10 +30,19 @@ export interface ActionProp {
 }
 
 export interface AppProps {
-    state: IState<IEmployee>;
+    state: IState;
     onInit: Function;
     onGetOne: Function;
     onCreate: Function;
     onEdit: Function;
     onDelete: Function;
+}
+
+export interface IEmployeeOpt extends Omit<IEmployee, 'birthDate'> {
+    birthDate?: Date;
+}
+
+export interface ICurrentEmployeeState {
+	data: IEmployeeOpt;
+	loading: Boolean;
 }
