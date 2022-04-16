@@ -1,8 +1,8 @@
 import { Component } from "react";
-// import { Link } from "react-router-dom";
+import { Link as LinkRouter } from "react-router-dom";
 import styled, { css } from 'styled-components';
 
-const Link = styled.a`
+const Link = styled(LinkRouter)`
   color: #FFC600 !important;
   font-weight: 300;
   margin-right: .7em;
@@ -37,14 +37,14 @@ export default class Navbar extends Component {
     render() {
       return (
         <Nav className="navbar navbar-dark bg-dark navbar-expand-lg">
-          <LinkBold href="/" className="navbar-brand">ASTP <Span>(Employee Management Web App)</Span></LinkBold>
+          <LinkBold to="/" className="navbar-brand">ASTP <Span>(Employee Management Web App)</Span></LinkBold>
           <div className="collpase navbar-collapse justify-content-end">
             <ul className="navbar-nav flex-row">
               <li className="navbar-item">
-                <Link href="/" className="nav-link ">All Employees</Link>
+                <Link to="/" className="nav-link ">All Employees</Link>
               </li>
               <li className="navbar-item">
-                <Link href="/register" className="nav-link">New Employee</Link>
+                <Link to="/register" className="nav-link">New Employee</Link>
               </li>
             </ul>
           </div>

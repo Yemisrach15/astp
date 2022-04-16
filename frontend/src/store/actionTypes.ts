@@ -16,5 +16,4 @@ enum ActionTypes {
     DELETE_EMPLOYEE_FAIL = "DELETE_EMPLOYEE_FAIL"
 }
 
-
 export default ActionTypes;
